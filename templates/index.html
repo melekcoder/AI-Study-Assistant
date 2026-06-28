@@ -2,10 +2,54 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Study Assistant</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>AI Study Assistant Hoşeldiniz </h1>
+
+<div class="navbar">
+        <div class="logo">🤖 AI Study Assistant</div>
+        <div class="nav-buttons">
+            <button class="login">Login</button>
+            <button class="register">Register</button>
+        </div>
+    </div>
+       
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Yapay Zekâ ile Çalışma Performansını Zirveye Çıkar.</h1>
+            <p>Derslerini organize et, notlarını sakla ve yapay zekâ desteğiyle saniyeler içinde özetler ve çalışma soruları üret.</p>
+            <button class="start">Hemen Başla ⚡</button>
+        </div>
+    </div>
     
+    <div class="features">
+        <h2 class="section-title">Özellikler</h2>
+        
+        <div class="features-grid">
+           
+            <div class="feature-card">
+                <div class="card-icon">📚</div>
+                <h3>Ders & Görev Yönetimi</h3>
+                <p>Tüm derslerini, dönemlik görevlerini ve çalışma takvimini tek bir panelden kolayca yönet.</p>
+            </div>
+
+            <!-- 2. Kart: AI Özet -->
+            <div class="feature-card">
+                <div class="card-icon">🤖</div>
+                <h3>AI Konu Özeti</h3>
+                <p>Uzun ders notlarını yükle, yapay zekâ senin için en önemli kısımları saniyeler içinde özetlesin.</p>
+            </div>
+
+            <!-- 3. Kart: AI Soru -->
+            <div class="feature-card">
+                <div class="card-icon">❓</div>
+                <h3>AI Soru Üretici</h3>
+                <p>Çalıştığın konulardan kendine testler hazırla, yapay zekâ seni sınava otomatik hazırlasın.</p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
