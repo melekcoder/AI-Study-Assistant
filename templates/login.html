@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap | AI Study Assistant</title>
+   
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <div class="card">
+            <div class="logo">🤖 AI Study Assistant</div>
+            <h2>Hesabına Giriş Yap</h2>
+            <p class="subtitle">Çalışma performansını zirveye çıkarmaya hazır mısın?</p>
+
+            <form action="#" method="POST">
+                <div class="input-group">
+                    <label for="email">E-posta Adresi</label>
+                    <input type="email" id="email" name="email" placeholder="ornek@eposta.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Şifre</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="auth-btn">Giriş Yap ⚡</button>
+            </form>
+
+            <div class="footer">
+                Hesabın yok mu? <a href="{{ url_for('register') }}">Şimdi Kayıt Ol</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
