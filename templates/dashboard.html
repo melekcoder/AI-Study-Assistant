@@ -2,10 +2,76 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - AI Study Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/confs/bootstrap.min.css" rel="stylesheet">
+    <style>
+body {
+            background-color: #0d0b18; 
+            color: #e2e1e9; 
+            margin: 0;
+            padding: 0;
+        }
+        .TumEkran {
+            display: flex;
+            height: 100vh;
+        }
+        .SolMenu {
+            width: 250px;
+            background-color: #110e25; 
+            padding: 20px;
+            border-right: 2px solid #a40ae0; 
+        }
+        .MenuBaslik {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .SolMenu a {
+            display: block;
+            color: #b5b3bc;
+            text-decoration: none;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .SolMenu a:hover {
+            color: #ffffff;
+            background-color: #231c44;
+            border-left: 4px solid #8a2be2;
+        }
+        .SagIcerik {
+            flex: 1; 
+            padding: 40px;
+        }
+        </style>
 </head>
 <body>
-    <h1>Dashboard</h1>
+   <div class="TumEkran">
+        
+       
+        <div class="SolMenu">
+            <div class="MenuBaslik">🧠 AI Study Assist</div>
+            
+            <a href="#">🏠 Dashboard</a>
+            <a href="#">📚 Derslerim</a>
+            <a href="#">🤖 AI Sohbet</a>
+            <a href="#">⚙️ Ayarlar</a>
+            
+          
+            <br><br>
+            <a href="#" style="color: #ff4d6d;">🚪 Çıkış Yap</a>
+        </div>
+
+        
+        <div class="SagIcerik">
+            <h2>Hoş Geldin! 👋</h2>
+            <p>Burası bizim ana içerik alanımız olacak.</p>
+        </div>
+
+    </div>
     
 </body>
 </html>
