@@ -6,7 +6,7 @@
     <title>Dashboard - AI Study Assistant</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-body {
+        body {
             background-color: #0d0b18; 
             color: #e2e1e9; 
             margin: 0;
@@ -47,125 +47,107 @@ body {
             padding: 40px;
         }
         .HosGeldinKarti {
-    background: linear-gradient(135deg, #16122c, #231c44); /
-    border: 1px solid rgba(138, 43, 226, 0.3);
-    border-radius: 15px;
-    padding: 25px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-.HosGeldinKarti h2 {
-    color: #ffffff;
-    margin: 0 0 10px 0;
-    font-size: 28px;
-}
-
-.HosGeldinKarti p {
-    color: #b5b3bc;
-    margin: 0;
-}
-
-
-.IstatistikSatiri {
-    display: flex;
-    gap: 20px;
-}
-.Kutu {
-    background-color: #16122c;
-    border: 1px solid rgba(138, 43, 226, 0.2);
-    border-radius: 10px;
-    padding: 20px;
-    flex: 1; 
-    text-align: center;
-}
-
-.Kutu h3 {
-    font-size: 32px;
-    color: #bc13fe; 
-    margin: 0 0 5px 0;
-}
-
-.Kutu p {
-    color: #b5b3bc;
-    margin: 0;
-    font-size: 14px;
-}
-
-.TabloAlani {
-    background-color: #16122c;
-    border: 1px solid rgba(138, 43, 226, 0.2);
-    border-radius: 10px;
-    padding: 25px;
-    margin-top: 30px; 
-}
-
-.TabloAlani h4 {
-    color: #ffffff;
-    margin-bottom: 20px;
-    font-size: 20px;
-}
-
-
-.custom-table {
-    color: #e2e1e9 !important;
-}
-
-.custom-table th {
-    color: #bc13fe !important; 
-    border-bottom: 2px solid rgba(138, 43, 226, 0.3) !important;
-}
-
-.custom-table td {
-    border-bottom: 1px solid rgba(138, 43, 226, 0.1) !important;
-    vertical-align: middle;
-}
-
-        </style>
+            background: linear-gradient(135deg, #16122c, #231c44);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .HosGeldinKarti h2 {
+            color: #ffffff;
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        .HosGeldinKarti p {
+            color: #b5b3bc;
+            margin: 0;
+        }
+        .IstatistikSatiri {
+            display: flex;
+            gap: 20px;
+        }
+        .Kutu {
+            background-color: #16122c;
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1; 
+            text-align: center;
+        }
+        .Kutu h3 {
+            font-size: 32px;
+            color: #bc13fe; 
+            margin: 0 0 5px 0;
+        }
+        .Kutu p {
+            color: #b5b3bc;
+            margin: 0;
+            font-size: 14px;
+        }
+        .TabloAlani {
+            background-color: #16122c;
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px; 
+        }
+        .TabloAlani h4 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        .custom-table {
+            color: #e2e1e9 !important;
+        }
+        .custom-table th {
+            color: #bc13fe !important; 
+            border-bottom: 2px solid rgba(138, 43, 226, 0.3) !important;
+        }
+        .custom-table td {
+            border-bottom: 1px solid rgba(138, 43, 226, 0.1) !important;
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
    
     <div class="TumEkran">
         
-        <!-- SOL MENÜ -->
         <div class="SolMenu">
             <div class="MenuBaslik">🧠 AI Study Assist</div>
             
-            <a href="#">🏠 Dashboard</a>
-            <a href="#">📚 Derslerim</a>
-            <a href="#">🤖 AI Sohbet</a>
+            <a href="/dashboard">🏠 Dashboard</a>
+            <a href="/derslerim">📚 Derslerim</a>
+            <a href="/ai_sohbet">🤖 AI Sohbet</a>
             <a href="#">⚙️ Ayarlar</a>
             
             <br><br>
             <a href="#" style="color: #ff4d6d;">🚪 Çıkış Yap</a>
         </div>
 
-        <!-- SAĞ TARAF (ANA İÇERİK ALANI) -->
         <div class="SagIcerik">
             
-            <!-- Hoş Geldin Kartı -->
             <div class="HosGeldinKarti">
                 <h2>Hoş Geldin, Melek! 👋</h2>
                 <p>Bugün hangi dersi çalışıyoruz? Yapay zekâ asistanın notlarını özetlemek için hazır.</p>
             </div>
 
-            <!-- İstatistik Kutuları -->
             <div class="IstatistikSatiri">
                 <div class="Kutu">
-                    <h3>3</h3>
+                    <h3>{{ istatistik.aktif_ders }}</h3>
                     <p>Aktif Ders Sayısı</p>
                 </div>
                 <div class="Kutu">
-                    <h3>12</h3>
+                    <h3>{{ istatistik.ai_ozet }}</h3>
                     <p>Oluşturulan AI Özeti</p>
                 </div>
                 <div class="Kutu">
-                    <h3>5</h3>
+                    <h3>{{ istatistik.calisma_saati }}</h3>
                     <p>Bu Haftaki Çalışma Saati</p>
-                </div>
+                </div>    
             </div>
 
-            <!-- Son Çalışılan Dersler Tablosu (Artık Sağ İçeriğin İçinde!) -->
             <div class="TabloAlani">
                 <h4>📚 Son Çalışılan Dersler</h4>
                 <table class="table table-dark table-hover custom-table mb-0">
@@ -178,35 +160,27 @@ body {
                         </tr>
                     </thead>
                     <tbody>
+                        {% for ders in dersler %}
                         <tr>
-                            <td>Nesne Yönelimli Programlama (C++)</td>
-                            <td>10 dakika önce</td>
-                            <td>Polimorfizm Özet Dosyası</td>
-                            <td><span class="badge bg-success">Tamamlandı</span></td>
+                            <td>{{ ders.ad }}</td>
+                            <td>{{ ders.zaman }}</td>
+                            <td>{{ ders.ozet }}</td>
+                            <td>
+                                {% if ders.durum == "Tamamlandı" %}
+                                    <span class="badge bg-success">Tamamlandı</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">İşleniyor</span>
+                                {% endif %}
+                            </td>
                         </tr>
-                        <tr>
-                            <td>Fizik 1 (Mekanik)</td>
-                            <td>Dün</td>
-                            <td>Newton Kanunları Formülleri</td>
-                            <td><span class="badge bg-warning text-dark">İşleniyor</span></td>
-                        </tr>
-                        <tr>
-                            <td>Web Tasarımı ve Programlama</td>
-                            <td>2 gün önce</td>
-                            <td>Flask Rotaları Giriş</td>
-                            <td><span class="badge bg-success">Tamamlandı</span></td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
 
-        </div> <!-- SagIcerik Kapanışı -->
+        </div> 
 
-    </div> <!-- TumEkran Kapanışı -->
+    </div> 
 
-    
-
-        
-        
 </body>
 </html>
