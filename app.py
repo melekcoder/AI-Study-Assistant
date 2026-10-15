@@ -1,13 +1,31 @@
+import sqlite3
 from flask import Flask, render_template
 
 app = Flask(__name__)
+
+def get_db():
+    baglanti = sqlite3.connect('database.db')
+    baglanti.execute("PRAGMA foreign_keys = ON")
+    return baglanti
+
+
+def init_db():
+    baglanti = get_db()
+    with open("schema.sql", encoding="utf-8") as f:
+        metin = f.read()
+    baglanti.executescript(metin)
+    baglanti.commit()
+    baglanti.close()
+
+
+init_db()
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
 @app.route("/login")
-def login():
+def login(): 
     return render_template("login.html")
 
 @app.route("/register")
