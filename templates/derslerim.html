@@ -13,7 +13,7 @@
         .SolMenu a { display: block; color: #b5b3bc; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 5px; }
         .SolMenu a:hover { color: #ffffff; background-color: #231c44; border-left: 4px solid #8a2be2; }
         .SagIcerik { flex: 1; padding: 40px; overflow-y: auto; }
-        .DersKartlari { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 100px)); gap: 20px; margin-top: 20px; }
+        .DersKartlari { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
         .DersKarti { background-color: #16122c; border: 1px solid rgba(138, 43, 226, 0.2); border-radius: 12px; padding: 20px; position: relative; }
         .DersKarti h3 { color: #ffffff; font-size: 20px; margin-bottom: 10px; }
         .DersKarti p { color: #b5b3bc; font-size: 14px; }
@@ -29,7 +29,7 @@
             <a href="/ai_sohbet">🤖 AI Sohbet</a>
             <a href="#">⚙️ Ayarlar</a>
             <br><br>
-            <a href="#" style="color: #ff4d6d;">🚪 Çıkış Yap</a>
+            <a href="{{ url_for('logout') }}" style="color: #ff4d6d;">🚪 Çıkış Yap</a>
         </div>
 
         <div class="SagIcerik">

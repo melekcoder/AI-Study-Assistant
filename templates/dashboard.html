@@ -123,13 +123,13 @@
             <a href="#">⚙️ Ayarlar</a>
             
             <br><br>
-            <a href="#" style="color: #ff4d6d;">🚪 Çıkış Yap</a>
+            <a href="{{ url_for('logout') }}" style="color: #ff4d6d;">🚪 Çıkış Yap</a>
         </div>
 
         <div class="SagIcerik">
             
             <div class="HosGeldinKarti">
-                <h2>Hoş Geldin, Melek! 👋</h2>
+                <h2>Hoş Geldin, {{ kullanici_adi }}! 👋</h2>
                 <p>Bugün hangi dersi çalışıyoruz? Yapay zekâ asistanın notlarını özetlemek için hazır.</p>
             </div>
 

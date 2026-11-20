@@ -13,8 +13,11 @@
             <div class="logo">🤖 AI Study Assistant</div>
             <h2>Yeni Hesap Oluştur</h2>
             <p class="subtitle">Yapay zekâ destekli çalışma alanına ilk adımı at.</p>
-
-            <form action="#" method="POST">
+            {% if hata %}
+            <p class="mesaj hata">{{ hata }}</p>
+            {% endif %}
+            
+            <form action="{{ url_for('register') }}" method="POST">
                 <div class="input-group">
                     <label for="username">Kullanıcı Adı</label>
                     <input type="text" id="username" name="username" placeholder="yazilimci_efe" required>

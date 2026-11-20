@@ -249,3 +249,23 @@ button {
     color: #33c4e3;
     text-decoration: underline;
 }
+/* Form mesajları */
+.mesaj {
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin: 0 0 20px 0;
+    text-align: left;
+}
+
+.mesaj.hata {
+    background-color: rgba(255, 77, 109, 0.12);
+    border: 1px solid #ff4d6d;
+    color: #ff8fa3;
+}
+
+.mesaj.basari {
+    background-color: rgba(0, 200, 120, 0.12);
+    border: 1px solid #00c878;
+    color: #6fe3b0;
+}
