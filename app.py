@@ -120,9 +120,9 @@ def logout():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    # TODO: bu veriler sonraki adımda veritabanından gelecek
+    # aktif_ders artık gerçek; ai_ozet ve calisma_saati hâlâ örnek (TODO)
     istatistikler = {
-        "aktif_ders": 2,
+        "aktif_ders": len(dersleri_getir(session["user_id"])),
         "ai_ozet": 12,
         "calisma_saati": 5
     }
@@ -151,31 +151,74 @@ def dashboard():
                            kullanici_adi=session["username"])
 
 
-@app.route("/derslerim")
+def dersleri_getir(user_id):
+    """Giriş yapan kullanıcının derslerini, not sayısıyla birlikte getirir."""
+    baglanti = get_db()
+    satirlar = baglanti.execute(
+        """
+        SELECT c.id, c.name, c.instructor, c.progress,
+               COUNT(n.id) AS not_sayisi
+        FROM courses c
+        LEFT JOIN notes n ON n.course_id = c.id
+        WHERE c.user_id = ?
+        GROUP BY c.id
+        ORDER BY c.created_at DESC, c.id DESC
+        """,
+        (user_id,),
+    ).fetchall()
+    baglanti.close()
+    return satirlar
+
+
+@app.route("/derslerim", methods=["GET", "POST"])
 @login_required
 def derslerim():
-    # TODO: sonraki adımda courses tablosuna bağlanacak
-    ders_listesi = [
-        {
-            "ad": "Nesne Yönelimli Programlama (C++)",
-            "hoca": "Dr. Mehmet Güvenir",
-            "ozet_adedi": 5,
-            "ilerleme": 75
-        },
-        {
-            "ad": "Fizik 1 (Mekanik)",
-            "hoca": "Prof. Dr. Necati Çelik",
-            "ozet_adedi": 4,
-            "ilerleme": 40
-        },
-        {
-            "ad": "Web Tasarımı ve Programlama",
-            "hoca": "Öğr. Gör. Ahmet Demir",
-            "ozet_adedi": 3,
-            "ilerleme": 90
-        }
-    ]
-    return render_template("derslerim.html", tum_dersler=ders_listesi)
+    user_id = session["user_id"]
+    hata = None
+
+    if request.method == "POST":
+        ad = request.form.get("name", "").strip()
+        hoca = request.form.get("instructor", "").strip()
+        ilerleme_metni = request.form.get("progress", "0").strip() or "0"
+
+        if not ad:
+            hata = "Ders adı boş olamaz."
+        elif len(ad) > 100:
+            hata = "Ders adı en fazla 100 karakter olabilir."
+        elif not ilerleme_metni.isdigit() or not 0 <= int(ilerleme_metni) <= 100:
+            hata = "İlerleme 0 ile 100 arasında bir sayı olmalı."
+        else:
+            baglanti = get_db()
+            baglanti.execute(
+                "INSERT INTO courses (user_id, name, instructor, progress) "
+                "VALUES (?, ?, ?, ?)",
+                (user_id, ad, hoca or None, int(ilerleme_metni)),
+            )
+            baglanti.commit()
+            baglanti.close()
+            # POST sonrası yönlendir: sayfa yenilenince form tekrar gönderilmesin
+            return redirect(url_for("derslerim"))
+
+    return render_template("derslerim.html",
+                           tum_dersler=dersleri_getir(user_id), hata=hata)
+
+
+@app.route("/ders_sil/<int:ders_id>", methods=["POST"])
+@login_required
+def ders_sil(ders_id):
+    user_id = session["user_id"]
+    baglanti = get_db()
+    # Önce dersin notları (foreign key yüzünden), sonra ders.
+    # İki sorguda da user_id kontrolü var: başkasının dersini silemezsin.
+    baglanti.execute(
+        "DELETE FROM notes WHERE course_id = ? AND user_id = ?",
+        (ders_id, user_id))
+    baglanti.execute(
+        "DELETE FROM courses WHERE id = ? AND user_id = ?",
+        (ders_id, user_id))
+    baglanti.commit()
+    baglanti.close()
+    return redirect(url_for("derslerim"))
 
 
 @app.route("/ai_sohbet")

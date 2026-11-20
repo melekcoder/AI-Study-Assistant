@@ -18,6 +18,17 @@
         .DersKarti h3 { color: #ffffff; font-size: 20px; margin-bottom: 10px; }
         .DersKarti p { color: #b5b3bc; font-size: 14px; }
         .DersKarti .Ilerleme { color: #bc13fe; font-weight: bold; font-size: 14px; }
+        .DersKarti .Sil { position: absolute; top: 12px; right: 12px; background: transparent; border: 1px solid rgba(255, 77, 109, 0.5); color: #ff4d6d; border-radius: 6px; padding: 2px 10px; font-size: 13px; cursor: pointer; }
+        .DersKarti .Sil:hover { background-color: #ff4d6d; color: #ffffff; }
+        .DersKarti h3 { padding-right: 60px; }
+        .BosDurum { background-color: #16122c; border: 1px dashed rgba(138, 43, 226, 0.4); border-radius: 12px; padding: 30px; text-align: center; color: #b5b3bc; margin-top: 20px; }
+        .DersFormu { background-color: #16122c; border: 1px solid rgba(138, 43, 226, 0.2); border-radius: 12px; padding: 20px; margin-top: 20px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+        .DersFormu label { display: block; font-size: 13px; color: #b5b3bc; margin-bottom: 6px; }
+        .DersFormu input { background-color: #0d0b18; border: 1px solid rgba(138, 43, 226, 0.3); border-radius: 6px; color: #ffffff; padding: 10px 12px; }
+        .DersFormu input:focus { outline: none; border-color: #8a2be2; }
+        .DersFormu button { background-color: #a40ae0; color: #ffffff; border: none; border-radius: 8px; padding: 10px 22px; font-weight: bold; cursor: pointer; }
+        .DersFormu button:hover { background-color: #8a2be2; }
+        .FormHata { background-color: rgba(255, 77, 109, 0.12); border: 1px solid #ff4d6d; color: #ff8fa3; border-radius: 6px; padding: 10px 14px; margin-top: 20px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -34,18 +45,48 @@
 
         <div class="SagIcerik">
             <h2>📚 Takip Ettiğim Dersler</h2>
-            <p>Yapay zekanın analiz ettiği ve çalıştığın aktif derslerin listesi.</p>
-            
+            <p>Çalıştığın aktif derslerin listesi.</p>
+
+            {% if hata %}
+            <div class="FormHata">{{ hata }}</div>
+            {% endif %}
+
+            <form class="DersFormu" action="{{ url_for('derslerim') }}" method="POST">
+                <div>
+                    <label for="name">Ders Adı *</label>
+                    <input type="text" id="name" name="name" maxlength="100" placeholder="Örn: Web Programlama" required>
+                </div>
+                <div>
+                    <label for="instructor">Eğitmen</label>
+                    <input type="text" id="instructor" name="instructor" placeholder="Örn: Ahmet Demir">
+                </div>
+                <div>
+                    <label for="progress">İlerleme (%)</label>
+                    <input type="number" id="progress" name="progress" min="0" max="100" value="0" style="width: 90px;">
+                </div>
+                <button type="submit">➕ Ders Ekle</button>
+            </form>
+
+            {% if tum_dersler %}
             <div class="DersKartlari">
                 {% for ders in tum_dersler %}
                 <div class="DersKarti">
-                    <h3>{{ ders.ad }}</h3>
-                    <p><strong>Eğitmen:</strong> {{ ders.hoca }}</p>
-                    <p><strong>Özet Sayısı:</strong> {{ ders.ozet_adedi }} adet AI Özeti</p>
-                    <div class="Ilerleme">📊 İlerleme Durumu: %{{ ders.ilerleme }}</div>
+                    <form action="{{ url_for('ders_sil', ders_id=ders.id) }}" method="POST"
+                          onsubmit="return confirm('Bu ders ve içindeki notlar silinecek. Emin misin?');">
+                        <button type="submit" class="Sil">Sil</button>
+                    </form>
+                    <h3>{{ ders.name }}</h3>
+                    <p><strong>Eğitmen:</strong> {{ ders.instructor or "—" }}</p>
+                    <p><strong>Not Sayısı:</strong> {{ ders.not_sayisi }} adet</p>
+                    <div class="Ilerleme">📊 İlerleme Durumu: %{{ ders.progress }}</div>
                 </div>
                 {% endfor %}
             </div>
+            {% else %}
+            <div class="BosDurum">
+                📭 Henüz ders eklemedin. Yukarıdaki formdan ilk dersini ekleyerek başla.
+            </div>
+            {% endif %}
         </div>
     </div>
 </body>
