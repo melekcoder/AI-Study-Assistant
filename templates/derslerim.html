@@ -21,6 +21,8 @@
         .DersKarti .Sil { position: absolute; top: 12px; right: 12px; background: transparent; border: 1px solid rgba(255, 77, 109, 0.5); color: #ff4d6d; border-radius: 6px; padding: 2px 10px; font-size: 13px; cursor: pointer; }
         .DersKarti .Sil:hover { background-color: #ff4d6d; color: #ffffff; }
         .DersKarti h3 { padding-right: 60px; }
+        .DersKarti .DersLink { color: #ffffff; text-decoration: none; }
+        .DersKarti .DersLink:hover { color: #bc13fe; text-decoration: underline; }
         .BosDurum { background-color: #16122c; border: 1px dashed rgba(138, 43, 226, 0.4); border-radius: 12px; padding: 30px; text-align: center; color: #b5b3bc; margin-top: 20px; }
         .DersFormu { background-color: #16122c; border: 1px solid rgba(138, 43, 226, 0.2); border-radius: 12px; padding: 20px; margin-top: 20px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
         .DersFormu label { display: block; font-size: 13px; color: #b5b3bc; margin-bottom: 6px; }
@@ -75,7 +77,7 @@
                           onsubmit="return confirm('Bu ders ve içindeki notlar silinecek. Emin misin?');">
                         <button type="submit" class="Sil">Sil</button>
                     </form>
-                    <h3>{{ ders.name }}</h3>
+                    <h3><a class="DersLink" href="{{ url_for('ders_detay', ders_id=ders.id) }}">{{ ders.name }}</a></h3>
                     <p><strong>Eğitmen:</strong> {{ ders.instructor or "—" }}</p>
                     <p><strong>Not Sayısı:</strong> {{ ders.not_sayisi }} adet</p>
                     <div class="Ilerleme">📊 İlerleme Durumu: %{{ ders.progress }}</div>

@@ -3,7 +3,7 @@ import sqlite3
 from functools import wraps
 
 from flask import (Flask, render_template, request, redirect,
-                   url_for, session)
+                   url_for, session, abort)
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -219,6 +219,128 @@ def ders_sil(ders_id):
     baglanti.commit()
     baglanti.close()
     return redirect(url_for("derslerim"))
+
+
+# ---------------------------------------------------------------- NOTLAR
+# Güvenlik kuralı: her sorguda user_id kontrolü var. Başka kullanıcının
+# ders/notuna ulaşmaya çalışan biri 404 alır (var olup olmadığını bile öğrenmez).
+
+BASLIK_MAX = 150
+ICERIK_MAX = 20000  # yapay zekâ özeti için de makul bir üst sınır
+
+
+def ders_getir(ders_id, user_id):
+    baglanti = get_db()
+    ders = baglanti.execute(
+        "SELECT * FROM courses WHERE id = ? AND user_id = ?",
+        (ders_id, user_id)).fetchone()
+    baglanti.close()
+    return ders
+
+
+def not_getir(not_id, user_id):
+    baglanti = get_db()
+    satir = baglanti.execute(
+        "SELECT * FROM notes WHERE id = ? AND user_id = ?",
+        (not_id, user_id)).fetchone()
+    baglanti.close()
+    return satir
+
+
+def not_dogrula(baslik, icerik):
+    """Hata mesajı döndürür, sorun yoksa None."""
+    if not baslik:
+        return "Not başlığı boş olamaz."
+    if len(baslik) > BASLIK_MAX:
+        return f"Başlık en fazla {BASLIK_MAX} karakter olabilir."
+    if len(icerik) > ICERIK_MAX:
+        return f"Not içeriği en fazla {ICERIK_MAX} karakter olabilir."
+    return None
+
+
+@app.route("/ders/<int:ders_id>", methods=["GET", "POST"])
+@login_required
+def ders_detay(ders_id):
+    user_id = session["user_id"]
+    ders = ders_getir(ders_id, user_id)
+    if ders is None:
+        abort(404)
+
+    hata = None
+    if request.method == "POST":
+        baslik = request.form.get("title", "").strip()
+        icerik = request.form.get("content", "").strip()
+        hata = not_dogrula(baslik, icerik)
+        if hata is None:
+            baglanti = get_db()
+            baglanti.execute(
+                "INSERT INTO notes (user_id, course_id, title, content) "
+                "VALUES (?, ?, ?, ?)",
+                (user_id, ders_id, baslik, icerik))
+            baglanti.commit()
+            baglanti.close()
+            return redirect(url_for("ders_detay", ders_id=ders_id))
+
+    baglanti = get_db()
+    # 'localtime': kayıt UTC tutulur, gösterirken bilgisayarın saatine çevrilir
+    notlar = baglanti.execute(
+        """
+        SELECT id, title, content,
+               datetime(created_at, 'localtime') AS tarih
+        FROM notes
+        WHERE course_id = ? AND user_id = ?
+        ORDER BY created_at DESC, id DESC
+        """,
+        (ders_id, user_id)).fetchall()
+    baglanti.close()
+
+    return render_template("ders_detay.html", ders=ders, notlar=notlar,
+                           hata=hata)
+
+
+@app.route("/not/<int:not_id>/duzenle", methods=["GET", "POST"])
+@login_required
+def not_duzenle(not_id):
+    user_id = session["user_id"]
+    kayit = not_getir(not_id, user_id)
+    if kayit is None:
+        abort(404)
+
+    hata = None
+    baslik, icerik = kayit["title"], kayit["content"] or ""
+
+    if request.method == "POST":
+        baslik = request.form.get("title", "").strip()
+        icerik = request.form.get("content", "").strip()
+        hata = not_dogrula(baslik, icerik)
+        if hata is None:
+            baglanti = get_db()
+            baglanti.execute(
+                "UPDATE notes SET title = ?, content = ? "
+                "WHERE id = ? AND user_id = ?",
+                (baslik, icerik, not_id, user_id))
+            baglanti.commit()
+            baglanti.close()
+            return redirect(url_for("ders_detay", ders_id=kayit["course_id"]))
+
+    ders = ders_getir(kayit["course_id"], user_id)
+    return render_template("not_duzenle.html", ders=ders, not_id=not_id,
+                           baslik=baslik, icerik=icerik, hata=hata)
+
+
+@app.route("/not/<int:not_id>/sil", methods=["POST"])
+@login_required
+def not_sil(not_id):
+    user_id = session["user_id"]
+    kayit = not_getir(not_id, user_id)
+    if kayit is None:
+        abort(404)
+    baglanti = get_db()
+    baglanti.execute("DELETE FROM notes WHERE id = ? AND user_id = ?",
+                     (not_id, user_id))
+    baglanti.commit()
+    baglanti.close()
+    return redirect(url_for("ders_detay", ders_id=kayit["course_id"]))
 
 
 @app.route("/ai_sohbet")

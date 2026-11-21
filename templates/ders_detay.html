@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ ders.name }} - AI Study Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0d0b18; color: #e2e1e9; margin: 0; padding: 0; }
+        .TumEkran { display: flex; height: 100vh; }
+        .SolMenu { width: 250px; background-color: #110e25; padding: 20px; border-right: 2px solid #a40ae0; }
+        .MenuBaslik { font-size: 20px; font-weight: bold; color: #ffffff; margin-bottom: 30px; text-align: center; }
+        .SolMenu a { display: block; color: #b5b3bc; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 5px; }
+        .SolMenu a:hover { color: #ffffff; background-color: #231c44; border-left: 4px solid #8a2be2; }
+        .SagIcerik { flex: 1; padding: 40px; overflow-y: auto; }
+        .Geri { color: #bc13fe; text-decoration: none; font-size: 14px; }
+        .Geri:hover { color: #d36bff; }
+        .NotFormu { background-color: #16122c; border: 1px solid rgba(138, 43, 226, 0.2); border-radius: 12px; padding: 20px; margin-top: 20px; }
+        .NotFormu label { display: block; font-size: 13px; color: #b5b3bc; margin-bottom: 6px; }
+        .NotFormu input, .NotFormu textarea { width: 100%; background-color: #0d0b18; border: 1px solid rgba(138, 43, 226, 0.3); border-radius: 6px; color: #ffffff; padding: 10px 12px; margin-bottom: 14px; box-sizing: border-box; font-family: inherit; }
+        .NotFormu input:focus, .NotFormu textarea:focus { outline: none; border-color: #8a2be2; }
+        .NotFormu textarea { min-height: 120px; resize: vertical; }
+        .Btn { background-color: #a40ae0; color: #ffffff; border: none; border-radius: 8px; padding: 10px 22px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; font-size: 14px; }
+        .Btn:hover { background-color: #8a2be2; color: #ffffff; }
+        .BtnKucuk { padding: 6px 14px; font-size: 13px; }
+        .BtnSil { background: transparent; border: 1px solid rgba(255, 77, 109, 0.5); color: #ff4d6d; }
+        .BtnSil:hover { background-color: #ff4d6d; color: #ffffff; }
+        .NotKarti { background-color: #16122c; border: 1px solid rgba(138, 43, 226, 0.2); border-radius: 12px; padding: 14px 20px; margin-top: 14px; }
+        .NotKarti summary { cursor: pointer; display: flex; justify-content: space-between; gap: 16px; color: #ffffff; font-weight: 600; }
+        .NotKarti .Tarih { color: #b5b3bc; font-weight: normal; font-size: 13px; white-space: nowrap; }
+        .NotKarti .Icerik { white-space: pre-wrap; word-wrap: break-word; color: #d5d3dc; margin: 14px 0; line-height: 1.6; }
+        .NotKarti .Islemler { display: flex; gap: 10px; align-items: center; }
+        .BosDurum { background-color: #16122c; border: 1px dashed rgba(138, 43, 226, 0.4); border-radius: 12px; padding: 30px; text-align: center; color: #b5b3bc; margin-top: 20px; }
+        .FormHata { background-color: rgba(255, 77, 109, 0.12); border: 1px solid #ff4d6d; color: #ff8fa3; border-radius: 6px; padding: 10px 14px; margin-top: 20px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="TumEkran">
+        <div class="SolMenu">
+            <div class="MenuBaslik">🧠 AI Study Assist</div>
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            <a href="{{ url_for('derslerim') }}" style="color: #ffffff; background-color: #231c44; border-left: 4px solid #8a2be2;">📚 Derslerim</a>
+            <a href="{{ url_for('ai_sohbet') }}">🤖 AI Sohbet</a>
+            <a href="#">⚙️ Ayarlar</a>
+            <br><br>
+            <a href="{{ url_for('logout') }}" style="color: #ff4d6d;">🚪 Çıkış Yap</a>
+        </div>
+
+        <div class="SagIcerik">
+            <a class="Geri" href="{{ url_for('derslerim') }}">← Derslerime dön</a>
+            <h2 class="mt-2">📖 {{ ders.name }}</h2>
+            <p>
+                <strong>Eğitmen:</strong> {{ ders.instructor or "—" }}
+                &nbsp;·&nbsp; <strong>İlerleme:</strong> %{{ ders.progress }}
+            </p>
+
+            {% if hata %}
+            <div class="FormHata">{{ hata }}</div>
+            {% endif %}
+
+            <form class="NotFormu" action="{{ url_for('ders_detay', ders_id=ders.id) }}" method="POST">
+                <label for="title">Not Başlığı *</label>
+                <input type="text" id="title" name="title" maxlength="150" placeholder="Örn: Polimorfizm" required>
+                <label for="content">Not İçeriği</label>
+                <textarea id="content" name="content" maxlength="20000" placeholder="Ders notlarını buraya yaz veya yapıştır..."></textarea>
+                <button type="submit" class="Btn">➕ Not Ekle</button>
+            </form>
+
+            <h4 class="mt-4">📝 Notlarım ({{ notlar|length }})</h4>
+
+            {% if notlar %}
+                {% for n in notlar %}
+                <details class="NotKarti">
+                    <summary>
+                        <span>{{ n.title }}</span>
+                        <span class="Tarih">{{ n.tarih[:16] }}</span>
+                    </summary>
+                    <div class="Icerik">{{ n.content or "(içerik yok)" }}</div>
+                    <div class="Islemler">
+                        <a class="Btn BtnKucuk" href="{{ url_for('not_duzenle', not_id=n.id) }}">✏️ Düzenle</a>
+                        <form action="{{ url_for('not_sil', not_id=n.id) }}" method="POST"
+                              onsubmit="return confirm('Bu not silinecek. Emin misin?');">
+                            <button type="submit" class="Btn BtnKucuk BtnSil">Sil</button>
+                        </form>
+                    </div>
+                </details>
+                {% endfor %}
+            {% else %}
+            <div class="BosDurum">
+                📭 Bu derse henüz not eklemedin. Yukarıdaki formdan ilk notunu ekle.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
